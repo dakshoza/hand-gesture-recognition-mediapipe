@@ -3,20 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Language Recognition</title>
+    <title>Sign Language Detection</title>
 </head>
 <body>
-    <h1>Sign Language: {{ check_sign_language }}</h1>
-    <h2 id="status_heading">Status: </h2>
+    <h1>Sign Language Detection</h1>
+    <img src="{{ url_for('video_feed') }}" width="640" height="480">
+    <p>Current Sign: {{ check_sign_language }}</p>
+    <p>Status: {{ status_message }}</p>
+    <form id="restart-form">
+        <label for="new_sign">Choose New Sign:</label>
+        <input type="text" id="new_sign" name="new_sign">
+        <input type="button" value="Restart" onclick="restart()">
+    </form>
     <script>
-        // EventSource to listen for updates from the server
-        const source = new EventSource('/status_updates');
-        source.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            const statusHeading = document.getElementById('status_heading');
-            statusHeading.textContent = "Status: " + data.message;
+        function restart() {
+            const newSign = document.getElementById('new_sign').value;
+            const data = new FormData();
+            data.append('new_sign', newSign);
+            fetch('/restart', {
+                method: 'POST',
+                body: data
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Restart successful');
+                } else {
+                    console.error('Restart failed');
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
     </script>
-    <img src="{{ url_for('video_feed') }}" width="640" height="480" />
 </body>
 </html>

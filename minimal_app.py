@@ -38,7 +38,7 @@ def main():
     gesture_recognizer = GestureRecognizer()
 
     gesture_list = []
-    check_sign_language = 'E'
+    check_sign_language = 'Z'
 
     cap_device = args.device
     cap_width = args.width
@@ -120,7 +120,7 @@ def main():
                         if gesture_list[gesture_list_len-2][0] != which_hand_current or gesture_list[gesture_list_len-2][1] != what_sign_current:
                             gesture_list.append([which_hand_current, what_sign_current])
                 
-                if len(gesture_list) > len(check_sign_language) + 2:
+                if len(gesture_list) > len(check_sign_language) + 4:
                     print(gesture_list)
                     print("Incorrect Sequence")
                     cap.release()
@@ -128,9 +128,10 @@ def main():
                     return
                 else:
                     query_sequence = ' '.join(sublist[1] for sublist in gesture_list)
-                    most_similar_word = gesture_recognizer.find_most_similar_word_for_sequence(query_sequence)
-                    print(most_similar_word)
-                    if check_sign_language == most_similar_word:
+                    most_similar_words = gesture_recognizer.find_most_similar_word_for_sequence(query_sequence)
+                    print(query_sequence)
+                    print(most_similar_words)
+                    if check_sign_language in most_similar_words:
                         print("Sign Language Successfully Done")
                         time.sleep(1.5)
                         cap.release()

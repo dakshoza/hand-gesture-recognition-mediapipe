@@ -20,23 +20,23 @@ class GestureRecognizer:
     ['L', 'L'],
     ['M', 'Palm Open 3'],
     ['N', 'Palm Open V'],
-    ['O', 'O'],
+    ['O', 'B'],
     ['P', 'Small Point Up'],
     ['Q', 'Circle Point Up'],
     ['R', 'Palm Out Upside Hook'],
-    ['S', 'Downside Hook'],
+    ['S', 'Downside Hook Upside Hook'],
     ['T', 'Point up Point in'],
     ['U', 'U'],
     ['V', 'V'],
     ['W', 'W W'],
     ['X', 'Point in Point in'],
     ['Y', 'L Point Up (Move)'],
-    ['Z', 'Palm Side Palm Hook'],
+    ['Z', 'Palm Side Palm Hook Palm Side Palm Hook'],
     ['1', 'Point Up'],
     ['2', 'V'],
     ['3', '3'],
     ['4', '4'],
-    ['5', '5'],
+    ['5', 'Palm Open'],
     ['6', 'Pinky'],
     ['7', 'Upside Hook'],
     ['8', '8'],
@@ -55,7 +55,8 @@ class GestureRecognizer:
     ['Deaf', 'Point Up/V(Move) V'],
     ['Teacher', 'G Point To Move / Tap'],
     ['Thankyou', '4 Move']
-        ]
+    ]
+
         self.vocabulary = self.build_vocabulary()
         self.word_to_index = {word: index for index, word in enumerate(self.vocabulary)}
         self.vectorized_data = self.vectorize_data()
@@ -91,14 +92,14 @@ class GestureRecognizer:
             embeddings = json.load(f)
         return {word: np.array(embedding) for word, embedding in embeddings.items()}
 
-    def find_most_similar_word(self, query_vector):
+    def find_most_similar_words(self, query_vector, num_words=3):
         similarities = []
         for word, vector in self.vectorized_data:
             similarity = cosine_similarity([query_vector], [vector])[0][0]
             similarities.append((word, similarity))
         similarities.sort(key=lambda x: x[1], reverse=True)
-        return similarities[0][0]
+        return [word for word, _ in similarities[:num_words]]
 
     def find_most_similar_word_for_sequence(self, query_sequence):
         query_vector = self.sequence_to_bow(query_sequence)
-        return self.find_most_similar_word(query_vector)
+        return self.find_most_similar_words(query_vector)

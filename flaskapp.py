@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, Response
+from flask import Flask, render_template, Response
 import cv2
 import numpy as np
 import time
@@ -102,9 +102,9 @@ def generate_frames():
                     return
                 else:
                     query_sequence = ' '.join(sublist[1] for sublist in gesture_list)
-                    most_similar_word = gesture_recognizer.find_most_similar_word_for_sequence(query_sequence)
-                    print(most_similar_word)
-                    if check_sign_language == most_similar_word:
+                    most_similar_words = gesture_recognizer.find_most_similar_word_for_sequence(query_sequence)
+                    print(most_similar_words)
+                    if check_sign_language in most_similar_words:
                         print("Sign Language Successfully Done")
                         update_status("Sign Language Successfully Done")
                         time.sleep(1.5)
