@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Recognition</title>
+</head>
+<body>
+    <h1>Sign Language: {{ check_sign_language }}</h1>
+    <h2 id="status_heading">Status: </h2>
+    <script>
+        // EventSource to listen for updates from the server
+        const source = new EventSource('/status_updates');
+        source.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const statusHeading = document.getElementById('status_heading');
+            statusHeading.textContent = "Status: " + data.message;
+        }
+    </script>
+    <img src="{{ url_for('video_feed') }}" width="640" height="480" />
+</body>
+</html>
